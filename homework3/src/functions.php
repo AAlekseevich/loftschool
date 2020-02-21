@@ -9,13 +9,13 @@
 function task1($arr, $ret = "0")
 {
     if ($ret == 0) {
-        foreach ($arr as $args[$i]) {
-            echo "<p>" . $args[$i] . "</p>";
+        foreach ($arr as $item) {
+            echo "<p>" . $item . "</p>";
         }
     } elseif ($ret == 1) {
         $str = "";
-        foreach ($arr as $args[$i]) {
-            $str .= $args[$i];
+        foreach ($arr as $item) {
+            $str .= $item;
         }
         return $str;
     }
@@ -34,11 +34,13 @@ function task2($opertions)
             $res -= $args[$i];
         }
     } elseif ($opertions == "*") {
-        for($i = 1; $i < sizeof($args); $i++) {
+        $res = $args[2];
+        for($i = 2; $i < sizeof($args); $i++) {
             $res *= $args[$i];
         }
     } elseif ($opertions == "/") {
-        for($i = 1; $i < sizeof($args); $i++) {
+        $res = $args[2];
+        for($i = 2; $i < sizeof($args); $i++) {
             $res /= $args[$i];
         }
     } else {
