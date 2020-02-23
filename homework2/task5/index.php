@@ -33,6 +33,6 @@ $car = array(
 
 foreach ($car as $key => $item) {
     echo "CAR " . $key . "<br>";
-    echo $item["model"] . " " . $item["speed"] . " " . $item["doors"] . " " . $item["year"];
+    echo implode(' ', $item);
     echo "<br> <br>";
 }
