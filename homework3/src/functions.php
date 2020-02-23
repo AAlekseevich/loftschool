@@ -62,7 +62,7 @@ function task3($row, $cell)
     if (!is_int($row) && !is_int($cell)) {
         echo "Аргументами могут быть только целые числа";
     }
-    
+
     echo "<table border='2'>";
     for ($r = 1; $r <= $row; $r++) {
         echo '<tr>';
@@ -83,12 +83,9 @@ function task4()
 
 function task5($bottle, $remove)
 {
-    $str = "Карл у Клары украл Кораллы";
-    $str = str_replace($remove, "",$str);
-    echo $str . "<br>";
-    $str2 = "Две бутылки лимонада";
-    $str2 = str_replace("Две", $bottle, $str2);
-    echo $str2;
+    echo str_replace($remove, "",'Карл у Клары украл Кораллы');
+    echo "<br>";
+    echo str_replace("Две", $bottle, "Две бутылки лимонада");
 }
 
 function task6($file)
