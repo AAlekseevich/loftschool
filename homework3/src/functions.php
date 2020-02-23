@@ -24,28 +24,37 @@ function task2($opertions)
 {
     $args = func_get_args();
     $res = 0;
-    if ($opertions == "+") {
-        for($i = 1; $i < sizeof($args); $i++) {
-            $res += $args[$i];
-        }
-    } elseif ($opertions == "-") {
-        for($i = 1; $i < sizeof($args); $i++) {
-            $res -= $args[$i];
-        }
-    } elseif ($opertions == "*") {
-        $res = $args[2];
-        for($i = 2; $i < sizeof($args); $i++) {
-            $res *= $args[$i];
-        }
-    } elseif ($opertions == "/") {
-        $res = $args[2];
-        for($i = 2; $i < sizeof($args); $i++) {
-            $res /= $args[$i];
-        }
-    } else {
-        echo "Ошибка";
+    switch ($opertions) {
+        case '+':
+            for($i = 1; $i < sizeof($args); $i++) {
+                $res += $args[$i];
+            }
+            return $res;
+            break;
+        case '-':
+            for($i = 1; $i < sizeof($args); $i++) {
+                $res -= $args[$i];
+            }
+            return $res;
+            break;
+        case '*':
+            $res = $args[2];
+            for($i = 2; $i < sizeof($args); $i++) {
+                $res *= $args[$i];
+            }
+            return $res;
+            break;
+        case '/':
+            $res = $args[2];
+            for($i = 2; $i < sizeof($args); $i++) {
+                $res /= $args[$i];
+            }
+            return $res;
+            break;
+        default:
+            echo "Ошибка ввода математического оператора";
+
     }
-    return $res;
 }
 
 function task3($row, $cell)

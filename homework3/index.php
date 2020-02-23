@@ -25,9 +25,9 @@ echo "<br>";
 
 echo "<h2>Task 2</h2>";
 
-echo task2("*", 3, 4, 5, 3, 5, 3, 1, 4);
+echo task2("*", 3, 8, 45, 8, 5, 3, 1, 4);
 echo "<br>";
-echo task2("-", 3);
+echo task2("-", 9, 4, 5, 3);
 
 echo "<br>";
 echo "<br>";
