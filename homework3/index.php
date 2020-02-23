@@ -55,9 +55,8 @@ echo "<br>";
 
 echo "<h2>Task 6</h2>";
 
+file_put_contents( 'test.txt', 'Hello, again!');
+
 task6("test.txt");
 
-$f = fopen("test.txt", "w");
-fwrite($f, "Hello again!");
-fclose($f);
 
