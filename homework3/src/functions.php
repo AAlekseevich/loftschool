@@ -8,16 +8,15 @@
 
 function task1($arr, $ret = "0")
 {
-    if ($ret == 0) {
-        foreach ($arr as $item) {
-            echo "<p>" . $item . "</p>";
-        }
-    } elseif ($ret == 1) {
+    if ($ret == 1) {
         $str = "";
         foreach ($arr as $item) {
             $str .= $item;
         }
         return $str;
+    }
+    foreach ($arr as $item) {
+        echo "<p>" . $item . "</p>";
     }
 }
 
