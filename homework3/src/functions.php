@@ -59,21 +59,19 @@ function task2($opertions)
 
 function task3($row, $cell)
 {
-    if(is_int($row) && is_int($cell)) {
-        echo "<table border='2'>";
-
-        for ($r = 1; $r <= $row; $r++) {
-            echo '<tr>';
-            for ($d = 1; $d <= $cell; $d++) {
-                $res = $r * $d;
-                echo "<td style='padding: 10px'> " . $res . " </td>";
-            }
-        }
-
-        echo "</table>";
-    } else {
+    if (!is_int($row) && !is_int($cell)) {
         echo "Аргументами могут быть только целые числа";
     }
+    
+    echo "<table border='2'>";
+    for ($r = 1; $r <= $row; $r++) {
+        echo '<tr>';
+        for ($d = 1; $d <= $cell; $d++) {
+            $res = $r * $d;
+            echo "<td style='padding: 10px'> " . $res . " </td>";
+        }
+    }
+    echo "</table>";
 }
 
 function task4()
