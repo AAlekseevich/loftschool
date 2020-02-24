@@ -1,0 +1,25 @@
+.purchase-order {
+    width: 60%;
+    margin: 0 auto;
+}
+table {
+    width: 100%;
+    margin: 20px 0;
+}
+td {
+    padding: 10px
+}
+th {
+    padding: 10px;
+    background-color: aliceblue;
+}
+.information {
+    display: flex;
+}
+.address {
+    display: flex;
+    width: 60%;
+}
+.address div {
+    width: 50%;
+}
