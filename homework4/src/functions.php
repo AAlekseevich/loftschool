@@ -6,6 +6,10 @@
  * Time: 21:36
  */
 
+function indentation() {
+    echo '<br><br>';
+}
+
 function task1($file)
 {
     $fileData = file_get_contents($file);
@@ -59,8 +63,67 @@ function task1($file)
     echo '</div>';
 
 }
-function task2()
+
+function arrayRecursiveDiff($Array1, $Array2) {
+    $Result = array();
+
+    foreach ($Array1 as $key => $value) {
+        if (array_key_exists($key, $Array2)) {
+            if (is_array($value)) {
+                $aRecursiveDiff = arrayRecursiveDiff($value, $Array2[$key]);
+                if (count($aRecursiveDiff)) { $Result[$key] = $aRecursiveDiff; }
+            } else {
+                if ($value != $Array2[$key]) {
+                    $Result[$key] = $value;
+                }
+            }
+        } else {
+            $Result[$key] = $value;
+        }
+    }
+
+    return $Result;
+}
+
+function task2($arr)
 {
+    $encodeArray = json_encode($arr);
+    $output1 = 'output.json';
+    $output2 = 'output2.json';
+    file_put_contents($output1, $encodeArray);
+
+    $jsonArray = file_get_contents($output1);
+    if (rand(0, 1) == 1) {
+        $jsonArray = json_decode($jsonArray, true);
+        echo '<pre><h2>Изначальный массив:</h2>';
+        print_r($jsonArray);
+        foreach ($jsonArray as &$item) {
+            $k = rand(0, sizeof($item));
+            for ($i = 0; $i < sizeof($item); $i++) {
+                if ($k == $i) {
+                    unset($item[$i]);
+                }
+            }
+        }
+        echo '<h2>Измененный массив:</h2>';
+        print_r($jsonArray);
+        $jsonArray = json_encode($jsonArray);
+        file_put_contents($output2, $jsonArray);
+
+        $jsonArray1 = file_get_contents($output1);
+        $jsonArray2 = file_get_contents($output2);
+        $jsonArray1 = json_decode($jsonArray1, true);
+        $jsonArray2 = json_decode($jsonArray2, true);
+
+        $result = arrayRecursiveDiff($jsonArray1, $jsonArray2);
+        echo '<h2>Во втором массиве отсутствуют:</h2>';
+        print_r($result);
+        echo '</pre>';
+    } else {
+        echo "Без изменений";
+    }
+    file_put_contents($output2, $jsonArray);
+
 
 }
 function task3()
