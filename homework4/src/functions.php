@@ -10,6 +10,10 @@ function indentation() {
     echo '<br><br>';
 }
 
+function titleTask($titleTask) {
+    echo '<h1>' . $titleTask . '</h1>';
+}
+
 function task1($file)
 {
     $fileData = file_get_contents($file);
@@ -128,7 +132,28 @@ function task2($arr)
 }
 function task3()
 {
+    $arr = [];
+    for ($i = 0; $i != 50; $i++) {
+        $arr[$i] = rand(0, 100);
+    }
 
+    $output = 'output.csv';
+
+    $fp = fopen($output, 'w');
+    fputcsv($fp, $arr);
+    fclose($fp);
+
+    $fp = fopen($output, 'r');
+    $data = fgetcsv($fp, 1000);
+    $count = count($data);
+    $result = 0;
+    for ($i = 0; $i != $count; $i++) {
+        if ($data[$i] % 2 == 0) {
+            $result += $data[$i];
+        }
+    }
+    fclose($fp);
+    echo "Результат: " . $result;
 }
 function task4()
 {
