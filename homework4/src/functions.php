@@ -68,7 +68,7 @@ function task1($file)
 
 }
 
-function arrayRecursiveDiff($Array1, $Array2) {
+function arrayRecursiveDiff(array $Array1, array $Array2) {
     $Result = array();
 
     foreach ($Array1 as $key => $value) {
@@ -89,7 +89,7 @@ function arrayRecursiveDiff($Array1, $Array2) {
     return $Result;
 }
 
-function task2($arr)
+function task2(array $arr)
 {
     $encodeArray = json_encode($arr);
     $output1 = 'output.json';
@@ -155,7 +155,28 @@ function task3()
     fclose($fp);
     echo "Результат: " . $result;
 }
+
+function getElement(array $data, $key, &$result)
+{
+    if (isset($data[$key])) {
+        $result = $data[$key];
+    }
+
+    foreach ($data as $k => $item) {
+        if (is_array($item)) {
+            getElement($item, $key,$result);
+        }
+    }
+}
+
 function task4()
 {
-
+    $data = file_get_contents('https://en.wikipedia.org/w/api.php?action=query&titles=Main%20Page&prop=revisions&rvprop=content&format=json');
+    $data = json_decode($data, true);
+    $title = '';
+    $pageid = '';
+    getElement($data, 'title', $title);
+    getElement($data, 'pageid', $pageid);
+    echo 'Title: ' . $title . '<br>';
+    echo 'Page ID: ' . $pageid;
 }

@@ -33,3 +33,9 @@ titleTask('Task 3');
 task3();
 
 indentation();
+
+titleTask('Task 4');
+
+task4();
+
+indentation();
