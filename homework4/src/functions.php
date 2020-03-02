@@ -101,11 +101,11 @@ function task2(array $arr)
         $jsonArray = json_decode($jsonArray, true);
         echo '<pre><h2>Изначальный массив:</h2>';
         print_r($jsonArray);
-        foreach ($jsonArray as &$item) {
-            $k = rand(0, sizeof($item));
-            for ($i = 0; $i < sizeof($item); $i++) {
+        foreach ($jsonArray as $key => $item) {
+            $k = rand(0, sizeof($key));
+            for ($i = 0; $i < sizeof($key); $i++) {
                 if ($k == $i) {
-                    unset($item[$i]);
+                    unset($key);
                 }
             }
         }
