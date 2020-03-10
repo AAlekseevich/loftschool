@@ -8,11 +8,16 @@
 
 namespace App\Controller;
 
+use App\Model\modelUser;
+use Base\Context;
+
 class Index extends \Base\Controller
 {
 
     public function indexAction()
     {
-        $this->view->userModel = new \App\Model\modelUser();
+        $user = new modelUser();
+        $users = modelUser::getList([1,2]);
+        $this->view->users = $users;
     }
 }

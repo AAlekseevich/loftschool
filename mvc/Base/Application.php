@@ -55,7 +55,6 @@ class Application
                 $html = $view->render($tpl);
                 echo $html;
             }
-            var_dump($controllerObj);
         } catch (\Error404 $e) {
             header('HTTP/1.0 404 Not Found');
             trigger_error($e->getMessage());

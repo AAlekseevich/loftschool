@@ -1,2 +1,16 @@
-Это шаблон: <?php echo __FILE__ ?> <br>
-ID: <?php echo $this->_id ?>
+<?php
+/** @var \App\Model\modelUser[] $users */
+$users = $this->users;
+?>
+
+Пользователи:<br>
+<?php if($users): ?>
+    <?php foreach ($users as $user): ?>
+        <div>
+            <?php echo $user->getName(); ?>
+        </div>
+        <div>
+            <?php echo $user->getAge(); ?>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
