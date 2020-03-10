@@ -28,6 +28,6 @@ class View
     {
         ob_start();
         include $tpl;
-        echo ob_get_clean();
+        return ob_get_clean();
     }
 }

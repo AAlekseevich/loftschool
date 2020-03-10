@@ -15,7 +15,19 @@ class Router
     const DEF_ACTION = 'index';
 
     private $_controllerName = '';
-    private $_actionName = '';
+    private $_actionToken = '';
+
+    protected function getRoutes()
+    {
+        return [
+          'Login' => [
+              'index' => 'User.login'
+          ],
+          'Register' => [
+              'index' => 'User.register'
+          ],
+        ];
+    }
 
     public function makeRoute()
     {
@@ -31,9 +43,19 @@ class Router
         }
 
         if (!$actionName || $this->check($actionName)) {
-            $this->_actionName = self::DEF_ACTION;
+            $this->_actionToken = self::DEF_ACTION;
         } else {
-            $this->_actionName = strtolower($actionName);
+            $this->_actionToken = strtolower($actionName);
+        }
+
+        $routes = $this->getRoutes();
+        if (isset($routes[$this->_controllerName]) && isset($routes[$this->_controllerName][$this->_actionToken])) {
+            list($this->_controllerName, $this->_actionToken) = explode('.', $routes[$this->_controllerName][$this->_actionToken]);
+        }
+
+        if ($this->_controllerName == 'Login' && $this->_actionToken == 'index') {
+            $this->_controllerName = 'User';
+            $this->_actionToken = 'login';
         }
     }
 
@@ -55,7 +77,15 @@ class Router
      */
     public function getActionName(): string
     {
-        return $this->_actionName;
+        return $this->_actionToken . 'Action';
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionToken(): string
+    {
+        return $this->_actionToken;
     }
 
 

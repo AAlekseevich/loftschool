@@ -8,10 +8,8 @@
 
 namespace App\Controller;
 
-class Index
+class Index extends \Base\Controller
 {
-    /** @var View */
-    public $view;
 
     public function indexAction()
     {

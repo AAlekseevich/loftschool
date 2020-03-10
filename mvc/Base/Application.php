@@ -36,20 +36,25 @@ class Application
             if (!class_exists($controllerFileName)) {
                 throw new Error404('Class ' . $controllerFileName . ' not exists');
             }
+
+            /** @var Controller $controllerObj */
             $controllerObj = new $controllerFileName();
 
-            $actionFuncName = $routes->getActionName() . 'Action';
+            $actionFuncName = $routes->getActionName();
             var_dump($actionFuncName);
             if (!method_exists($controllerObj, $actionFuncName)) {
                 throw new Error404('Action ' . $actionFuncName . ' not exists');
             }
 
-            $tpl = '../App/Templates/' . $routes->getControllerName() . '/' . $routes->getActionName() . '.phtml';
+            $tpl = '../App/Templates/' . $routes->getControllerName() . '/' . $routes->getActionToken() . '.phtml';
 
             $view = new \Base\View();
             $controllerObj->view = $view;
             $controllerObj->$actionFuncName();
-            $view->render($tpl);
+            if ($controllerObj->isRender()) {
+                $html = $view->render($tpl);
+                echo $html;
+            }
             var_dump($controllerObj);
         } catch (\Error404 $e) {
             header('HTTP/1.0 404 Not Found');
