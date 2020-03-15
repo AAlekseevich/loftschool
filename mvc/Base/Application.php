@@ -2,62 +2,112 @@
 /**
  * Created by PhpStorm.
  * User: Anton
- * Date: 10.03.2020
- * Time: 1:13
+ * Date: 14.03.2020
+ * Time: 16:48
  */
 
 namespace Base;
 
-use Base\Exception\Error404;
+use \Base\Model\Factory as Factory;
+use \Base\View as View;
 
 class Application
 {
-    /** @var Context */
-    private $_context;
+    private $config;
+    /**
+     * @var Context
+     */
+    private $context;
+    /**
+     * @var Request
+     */
+    private $request;
+    /**
+     * @var Router
+     */
+    private $routers;
 
-    protected function init() {
-        $this->_context = Context::i();
-        $request = new Request();
-        $routes = new Router();
-        $db = new DB();
+    /** @var DBConnection */
+    private $db;
 
-        $this->_context->setRequest($request);
-        $this->_context->setRoutes($routes);
-        $this->_context->setDb($db);
+
+    public function init()
+    {
+        $this->context = Context::getInstance();
+
+        $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv->load();
+
+        $this->db = new DBConnection();
+        $this->context->setDbConnection($this->db);
+
+        $this->request = new Request();
+        $this->context->setRequest( $this->request );
+
+        //$this->initUser();
     }
 
-    public function run() {
+//    private function initUser() {
+//        $session = Session::instance;
+//        $userId = $session->getUserId();
+//        if ($userId) {
+//            if ($session->check()) {
+//                $user = Factory::getById(FACTORY::MODEL_USER, $userId) {
+//                    if ($user) {
+//                        $this->context->setUser($user);
+//                }
+//                }
+//            }
+//        }
+//    }
+
+    public function run()
+    {
         try {
             $this->init();
-            $this->_context->getRoutes()->makeRoute();
-            $routes = $this->_context->getRoutes();
 
-            $controllerFileName = 'App\Controller\\' . $routes->getControllerName();
-            if (!class_exists($controllerFileName)) {
-                throw new Error404('Class ' . $controllerFileName . ' not exists');
+            $this->request->handle();
+
+            $this->routers = new Router();
+            $this->context->setRouters($this->routers);
+            $this->routers->router();
+
+            $controller = $this->routers->getController();
+
+            $action = strtolower($this->routers->getActionName()) . 'Action';
+
+            if (!method_exists($controller, $action)) {
+                throw new \Exception('Action ' . $action . ' not found is controller ' . $this->routers->getControllerName());
             }
 
-            /** @var Controller $controllerObj */
-            $controllerObj = new $controllerFileName();
 
-            $actionFuncName = $routes->getActionName();
-            var_dump($actionFuncName);
-            if (!method_exists($controllerObj, $actionFuncName)) {
-                throw new Error404('Action ' . $actionFuncName . ' not exists');
+            $view = new View($this->getDefaultTemplatePath());
+
+            $controller->view = $view;
+
+            $user = Context::getInstance()->getUser();
+            if ($user) {
+                $controller->setUser(User);
             }
 
-            $tpl = '../App/Templates/' . $routes->getControllerName() . '/' . $routes->getActionToken() . '.phtml';
+            $controller->$action();
 
-            $view = new \Base\View();
-            $controllerObj->view = $view;
-            $controllerObj->$actionFuncName();
-            if ($controllerObj->isRender()) {
-                $html = $view->render($tpl);
-                echo $html;
+            if ($controller) {
+                $content = $view->render($controller->tpl);
+                echo $content;
             }
-        } catch (\Error404 $e) {
-            header('HTTP/1.0 404 Not Found');
-            trigger_error($e->getMessage());
+//        } catch (RedirectException $e) {
+//            header('Location: ' . $e->getLocation());
+//        } catch (\Exception $e) {
+//            $e->process();
+        } catch (\Exception $e) {
+            echo 'Произошло исключение: ' . $e->getMessage();
         }
+
+    }
+
+    private function getDefaultTemplatePath()
+    {
+        return ucfirst('\..\App\\' . $this->routers->getModuleName()) . DIRECTORY_SEPARATOR . 'Templates' . DIRECTORY_SEPARATOR;
     }
 }

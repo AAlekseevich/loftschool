@@ -2,8 +2,9 @@
 /**
  * Created by PhpStorm.
  * User: Anton
- * Date: 10.03.2020
- * Time: 0:44
+ * Date: 14.03.2020
+ * Time: 16:49
  */
 
-require '../vendor/autoload.php';
+require_once 'config.php';
+require_once '../vendor/autoload.php';

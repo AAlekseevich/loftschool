@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: Anton
- * Date: 10.03.2020
- * Time: 1:13
+ * Date: 14.03.2020
+ * Time: 17:07
  */
 
 namespace Base;
@@ -11,82 +11,111 @@ namespace Base;
 
 class Router
 {
-    const DEF_CONTROLLER = 'Index';
-    const DEF_ACTION = 'index';
+    const DEFAULT_MODULE = 'Main';
+    const DEFAULT_CONTROLLER = 'Main';
+    const DEFAULT_ACTION = 'Main';
 
-    private $_controllerName = '';
-    private $_actionToken = '';
+    /** @var Request */
+    private $request;
 
-    protected function getRoutes()
+    private $moduleName;
+    private $controllerName;
+    private $actionName;
+
+    public function __construct()
+    {
+        $this->request = Context::getInstance()->getRequest();
+    }
+
+    public function router()
+    {
+        $requestModule = $this->request->getRequestModule();
+        $requestController = $this->request->getRequestController();
+        $requestAction = $this->request->getRequestAction();
+
+        $module = $requestModule ? ucfirst(strtolower($requestModule)) : false;
+        $controller = $requestModule ? ucfirst(strtolower($requestController)) : false;
+        $action = $requestAction ? strtolower($requestAction) : false;
+
+        $this->moduleName = $module;
+        $this->controllerName = $controller;
+        $this->actionName = $action;
+    }
+
+    public function getRoutes()
     {
         return [
-          'Login' => [
-              'index' => 'User.login'
-          ],
-          'Register' => [
-              'index' => 'User.register'
-          ],
+            'main' => 'main.main.main',
+            'login' => 'user.user.login',
+            'register' => 'user.user.register',
         ];
     }
 
-    public function makeRoute()
+    private function processRoutes()
     {
-        $request = Context::i()->getRequest();
-
-        $controllerName = $request->getControllerName();
-        $actionName = $request->getActionName();
-
-        if (!$controllerName || !$this->check($controllerName)) {
-            $this->_controllerName = self::DEF_CONTROLLER;
-        } else {
-            $this->_controllerName = ucfirst(strtolower($controllerName));
-        }
-
-        if (!$actionName || $this->check($actionName)) {
-            $this->_actionToken = self::DEF_ACTION;
-        } else {
-            $this->_actionToken = strtolower($actionName);
-        }
-
         $routes = $this->getRoutes();
-        if (isset($routes[$this->_controllerName]) && isset($routes[$this->_controllerName][$this->_actionToken])) {
-            list($this->_controllerName, $this->_actionToken) = explode('.', $routes[$this->_controllerName][$this->_actionToken]);
+        $module = strtolower($this->moduleName);
+        $foundRoute = false;
+
+        if (isset($routes[$module]) && is_string($routes[$module]) && empty($this->controllerName)) {
+            $foundRoute = $routes[$module];
+            var_dump($foundRoute);
+        } elseif (isset($routes[$module]) && is_array($routes[$module]) && isset($routes[$module][strtolower($this->_controllerName)]) && empty($this->_actionName)) {
+            $foundRoute = $routes[$module][strtolower($this->_controllerName)];
+            var_dump($foundRoute);
         }
 
-        if ($this->_controllerName == 'Login' && $this->_actionToken == 'index') {
-            $this->_controllerName = 'User';
-            $this->_actionToken = 'login';
+        if ($foundRoute) {
+            list($newModule, $newController, $newAction) = explode('.', $foundRoute);
+            $this->moduleName = $newModule;
+            $this->controllerName = $newController;
+            $this->actionName = $newAction;
         }
+
     }
 
-    private function check(string $key)
+    public function getController()
     {
-        return preg_match('/[a-zA-Z0-9]+/', $key);
-    }
+        $this->processRoutes();
 
-    /**
-     * @return string
-     */
-    public function getControllerName(): string
-    {
-        return $this->_controllerName;
-    }
+        $this->moduleName = $this->moduleName ?: self::DEFAULT_MODULE;
+        $this->controllerName = $this->controllerName ?: self::DEFAULT_CONTROLLER;
+        $this->actionName = $this->actionName ?: self::DEFAULT_ACTION;
 
-    /**
-     * @return string
-     */
-    public function getActionName(): string
-    {
-        return $this->_actionToken . 'Action';
+        $controllerClassName = 'App\\' . $this->moduleName . '\Controller\\' . $this->controllerName;
+        if (!class_exists($controllerClassName)) {
+            throw new \Exception('Controller ' . $controllerClassName . ' not found');
+        }
+
+        $controller = new $controllerClassName();
+
+        return $controller;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getActionToken(): string
+    public function getModuleName()
     {
-        return $this->_actionToken;
+        return $this->moduleName;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getControllerName()
+    {
+        return $this->controllerName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActionName()
+    {
+        return $this->actionName;
+    }
+
 
 
 }

@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: Anton
- * Date: 10.03.2020
- * Time: 1:13
+ * Date: 14.03.2020
+ * Time: 17:02
  */
 
 namespace Base;
@@ -11,14 +11,11 @@ namespace Base;
 
 class Context
 {
-    private static $_instance;
-
-    /** @var Request */
-    private $_request;
-    /** @var Router */
-    private $_routes;
-    /** @var DB */
-    private $_db;
+    private $request;
+    private $routers;
+    private $user;
+    private $dbConnection;
+    private static $instance;
 
     private function __construct()
     {
@@ -29,61 +26,77 @@ class Context
         // TODO: Implement __clone() method.
     }
 
-    public static function i()
+    public static function getInstance()
     {
-        if (!self::$_instance) {
-            self::$_instance = new self();
+        if(!self::$instance) {
+            self::$instance = new self();
         }
 
-        return self::$_instance;
+        return self::$instance;
     }
 
     /**
-     * @return Request
+     * @return mixed
      */
-    public function getRequest(): Request
+    public function getRequest()
     {
-        return $this->_request;
+        return $this->request;
     }
 
     /**
-     * @param Request $request
+     * @param mixed $request
      */
-    public function setRequest(Request $request): void
+    public function setRequest($request)
     {
-        $this->_request = $request;
+        $this->request = $request;
     }
 
     /**
-     * @return Router
+     * @return mixed
      */
-    public function getRoutes(): Router
+    public function getRouters()
     {
-        return $this->_routes;
+        return $this->routers;
     }
 
     /**
-     * @param Router $routes
+     * @param mixed $routers
      */
-    public function setRoutes(Router $routes): void
+    public function setRouters($routers)
     {
-        $this->_routes = $routes;
+        $this->routers = $routers;
     }
 
     /**
-     * @return DB
+     * @return mixed
      */
-    public function getDb(): DB
+    public function getUser()
     {
-        return $this->_db;
+        return $this->user;
     }
 
     /**
-     * @param DB $db
+     * @param mixed $user
      */
-    public function setDb(DB $db): void
+    public function setUser($user)
     {
-        $this->_db = $db;
+        $this->user = $user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDbConnection()
+    {
+        return $this->dbConnection;
+    }
+
+    /**
+     * @param mixed $dbConnection
+     */
+    public function setDbConnection($dbConnection)
+    {
+        $this->dbConnection = $dbConnection;
     }
 
 
