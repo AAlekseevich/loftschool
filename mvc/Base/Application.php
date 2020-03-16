@@ -9,6 +9,7 @@
 namespace Base;
 
 use \Base\Model\Factory as Factory;
+use \App\User\Model\User as User;
 use \Base\View as View;
 
 class Application
@@ -44,22 +45,20 @@ class Application
         $this->request = new Request();
         $this->context->setRequest( $this->request );
 
-        //$this->initUser();
+        $this->initUser();
     }
 
-//    private function initUser() {
-//        $session = Session::instance;
-//        $userId = $session->getUserId();
-//        if ($userId) {
-//            if ($session->check()) {
-//                $user = Factory::getById(FACTORY::MODEL_USER, $userId) {
-//                    if ($user) {
-//                        $this->context->setUser($user);
-//                }
-//                }
-//            }
-//        }
-//    }
+    private function initUser() {
+        $session = Session::instance();
+        $userId = $session->getUserId();
+        if ($userId) {
+            if ($session->check()) {
+                if($user = User::find($userId)) {
+                    $this->context->setUser($user);
+                }
+            }
+        }
+    }
 
     public function run()
     {
@@ -87,7 +86,7 @@ class Application
 
             $user = Context::getInstance()->getUser();
             if ($user) {
-                $controller->setUser(User);
+                $controller->setUser($user);
             }
 
             $controller->$action();
@@ -96,8 +95,8 @@ class Application
                 $content = $view->render($controller->tpl);
                 echo $content;
             }
-//        } catch (RedirectException $e) {
-//            header('Location: ' . $e->getLocation());
+        } catch (RedirectException $e) {
+            header('Location: ' . $e->getLocation());
 //        } catch (\Exception $e) {
 //            $e->process();
         } catch (\Exception $e) {

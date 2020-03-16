@@ -35,7 +35,7 @@ class ControllerAbstract
 
     protected function redirect(string $location)
     {
-        throw new RedirectException($location);
+        throw new RedirectException($location, 0);
     }
 
     public function p(string $key)

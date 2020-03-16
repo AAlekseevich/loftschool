@@ -9,56 +9,37 @@
 namespace App\User\Model;
 
 use Base\Context;
-use Base\DBConnection as DBConnection;
+use Base\Session as Session;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    private $id;
-    private $name;
-    private $password;
-    private $passwordHash;
-    private $age;
-    private $description;
-    private $photo;
-    private $createdAt;
     protected $table = 'users';
+    protected $fillable = ['name', 'password', 'age', 'description', 'photo'];
 
-    public function initDbByData(array $data)
+    public function authorize($name, $password)
     {
-        $this->id = $data['id'];
-        $this->name = $data['name'];
-        $this->passwordHash = $data['password_hash'];
-        $this->age = $data['age'];
-        $this->description = $data['description'];
-        $this->photo = $data['photo'];
-        $this->createdAt = $data['created_at'];
-
+        $user = User::where('name', '=' ,$name)->first();
+        if ($user->password == $password) {
+            $session = Session::instance();
+            $session->save((int)$user->id);
+            return true;
+        }
+        return false;
     }
 
-    public function initByData(array $data)
+    public function saveToDb($data)
     {
-        $this->name = $data['name'];
-        $this->password = $data['password'];
-        $this->age = $data['age'];
-        $this->description = $data['description'];
-        $this->photo = $data['photo'];
+        User::firstOrCreate($data);
     }
 
-    public function saveToDb()
+    public function getById($id)
     {
-        $user = new User;
-        $user->name = $this->name;
-        $user->password = $this->genPasswordHash();
-        $user->age = $this->age;
-        $user->description = $this->description;
-        $user->photo = $this->photo;
-        $user->save();
+        return User::find($id);
     }
 
-    private function genPasswordHash()
+    public function getAllUsers()
     {
-        $hash = md5($this->password);
-        return $hash;
+        return User::all();
     }
 }

@@ -48,6 +48,8 @@ class Router
             'main' => 'main.main.main',
             'login' => 'user.user.login',
             'register' => 'user.user.register',
+            'logout' => 'user.user.logout',
+            'file' => 'file.file.main'
         ];
     }
 
@@ -59,10 +61,8 @@ class Router
 
         if (isset($routes[$module]) && is_string($routes[$module]) && empty($this->controllerName)) {
             $foundRoute = $routes[$module];
-            var_dump($foundRoute);
         } elseif (isset($routes[$module]) && is_array($routes[$module]) && isset($routes[$module][strtolower($this->_controllerName)]) && empty($this->_actionName)) {
             $foundRoute = $routes[$module][strtolower($this->_controllerName)];
-            var_dump($foundRoute);
         }
 
         if ($foundRoute) {

@@ -13,6 +13,8 @@ class View
 {
     private $templatePath;
 
+
+
     private $data = [];
 
     public function __construct($path = '')

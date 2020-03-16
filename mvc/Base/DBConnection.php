@@ -12,6 +12,8 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 
 class DBConnection
 {
+
+
     public function __construct()
     {
         $capsule = new Capsule();
