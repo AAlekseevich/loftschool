@@ -97,10 +97,8 @@ class Application
             }
         } catch (RedirectException $e) {
             header('Location: ' . $e->getLocation());
-//        } catch (\Exception $e) {
-//            $e->process();
         } catch (\Exception $e) {
-            echo 'Произошло исключение: ' . $e->getMessage();
+            header("HTTP/1.0 404 Not Found");
         }
 
     }

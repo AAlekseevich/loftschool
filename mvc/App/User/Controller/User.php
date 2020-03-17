@@ -8,11 +8,8 @@
 
 namespace App\User\Controller;
 
-
-use Base\Context;
 use Base\ControllerAbstract;
 use App\User\Model\User as userModel;
-use Base\DBConnection;
 use Base\Session;
 use Intervention\Image\ImageManager as Image;
 
@@ -75,6 +72,13 @@ class User extends ControllerAbstract
             $user->saveToDb($data);
             $this->redirect('/');
         }
+    }
+
+    public function fillAction()
+    {
+        $user = new userModel();
+        $user->fakerSave();
+        $this->redirect('/');
     }
 
     public function logoutAction()

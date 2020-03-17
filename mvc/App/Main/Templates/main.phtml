@@ -1,10 +1,9 @@
 <?php
 /** @var \App\User\Model\User $user */
 $user = \Base\Context::getInstance()->getUser();
-$users = $user->getAllUsers();
 ?>
 <!doctype html>
-<html lang="ru">
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -22,18 +21,23 @@ $users = $user->getAllUsers();
 <header>
     <h4>Hello, <?=$user->name?></h4>
     <ul>
-        <li><a href="/logout">Выход</a></li>
         <li><a href="/file">Загрузить файл</a></li>
+        <li><a href="/fill">Сгенерировать пользователей</a></li>
+        <li><a href="/logout">Выход</a></li>
     </ul>
 </header>
     <br><br>
 <table border="1">
     <tr>
         <th>Имя</th>
-        <th>Возраст</th>
+        <th><a href="/sort"> Возраст </a></th>
         <th>Статус</th>
     </tr>
-    <?php foreach ($users as $user) { ?>
+    <?php
+    if (!empty($user)) {
+    $users = $user->getAllUsers();
+    }
+    foreach ($users as $user) { ?>
         <tr>
             <td><?php echo $user->name ?></td>
             <td><?php echo $user->age ?></td>

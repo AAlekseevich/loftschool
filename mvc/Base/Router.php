@@ -49,7 +49,8 @@ class Router
             'login' => 'user.user.login',
             'register' => 'user.user.register',
             'logout' => 'user.user.logout',
-            'file' => 'file.file.main'
+            'file' => 'file.file.main',
+            'fill' => 'user.user.fill'
         ];
     }
 

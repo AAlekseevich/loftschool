@@ -8,7 +8,7 @@
 
 namespace App\User\Model;
 
-use Base\Context;
+use Faker\Factory as Faker;
 use Base\Session as Session;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,6 +28,20 @@ class User extends Model
         return false;
     }
 
+    public function fakerSave()
+    {
+        $faker = Faker::create('en_EN');
+        for($i = 0; $i<40; $i++) {
+            $user = new User();
+            $user->name = $faker->name;
+            $user->password = $this->genPasswordHash($faker->password);
+            $user->age = mt_rand(10, 60);
+            $user->description = $faker->text;
+            $user->photo = '';
+            $user->save();
+        }
+    }
+
     public function saveToDb($data)
     {
         User::firstOrCreate($data);
@@ -38,8 +52,14 @@ class User extends Model
         return User::find($id);
     }
 
-    public function getAllUsers()
+    public function getAllUsersAsc()
     {
-        return User::all();
+        return User::all()->sortBy('age');
+    }
+
+    private function genPasswordHash($password)
+    {
+        $hash = md5($password);
+        return $hash;
     }
 }
