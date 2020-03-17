@@ -52,7 +52,7 @@ class User extends Model
         return User::find($id);
     }
 
-    public function getAllUsersAsc()
+    public function getAllUsers()
     {
         return User::all()->sortBy('age');
     }
