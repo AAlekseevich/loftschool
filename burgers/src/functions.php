@@ -6,6 +6,12 @@
  * Time: 18:16
  */
 
+require_once '../vendor/autoload.php';
+
+use Intervention\Image\ImageManager as Image;
+
+$count = 0;
+
 function connect()
 {
     global $pdo;
@@ -43,30 +49,64 @@ function getOrder($userId) {
     return $order;
 }
 
-function sendMail($order, $home, $street, $part, $apartment, $floor)
+function sendMail($order, $email, $home, $street, $part, $apartment, $floor)
 {
+    $transport = (new Swift_SmtpTransport('smtp.yandex.ru', 465, 'ssl'))
+        ->setUsername('loftschoolburger@yandex.ru')
+        ->setPassword('loftschoolburger123')
+    ;
+
+    $mailer = new Swift_Mailer($transport);
     $orderNum = sizeof($order);
-    $message = "
-    Ваш заказ будет доставлен по адресу:
-    Улица: $street
-    Дом: $home
-    Корпус: $part
-    Квартира: $apartment
-    Этаж: $floor
-    
-    Заказ:
-    DarkBeefBurger за 500 рублей - 1 шт
-    
-    ";
-    sizeof($order) == 1 ? $message .= "Спасибо - это ваш первый заказ" : $message .= "Спасибо! Это уже $orderNum заказ";
+    $userOrderNum = sizeof($order) == 1 ? "Спасибо - это ваш первый заказ" : "Спасибо! Это уже $orderNum заказ";
+    $message = (new Swift_Message('Ваш заказ №' . $orderNum . ' LoftSchool Burgers'))
+        ->setFrom(['loftschoolburger@yandex.ru' => 'LoftSchool Burgers'])
+        ->setTo([$email])
+        ->setBody(
 
-    $file = 'mail/order_'. $order[$orderNum-1]['id'] . "_" . date("d-m-Y") . '.txt';
+            '<html>' .
+            '<body>' .
+            'Ваш заказ будет доставлен по адресу: <br> ' .
+            'Улица: ' . $street . '<br>' .
+            'Дом: ' . $home . '<br>' .
+            'Корпус: ' . $part . '<br>' .
+            'Квартира: ' . $apartment . '<br>' .
+            'Этаж: ' . $floor . '<br>' .
+            'Заказ: <br>' .
+            'DarkBeefBurger за 500 рублей - 1 шт <br><br>' .
+            $userOrderNum .
+            '</body>' .
+            '</html>',
+            'text/html'
+        )
+    ;
 
-    file_put_contents($file, $message);
+    $result = $mailer->send($message);
 }
 
-function main()
+function editImage()
 {
+    $manager = new Image(array('driver' => 'gd'));
+    $img = $manager->make('../public/img/content/burgers/1.png');
+    $img->resize(200, null, function ($constraint) {
+        $constraint->aspectRatio();
+    });
+    $img->colorize(-15, -15, -15);
+    $img->rotate(-45);
+    $watermark = $manager->make('../public/img/content/watermark.png');
+    $watermark->colorize(100, 100, 100);
+    $watermark->resize(100, null, function ($constraint) {
+    $constraint->aspectRatio();
+    });
+    $img->insert($watermark, 'center');
+    $img->save('../public/img/content/burger.png');
+}
+
+function main(&$count)
+{
+    editImage();
+
+
     connect();
     //1. Проверка массива POST и выход если пусто.
     if (empty($_POST)) {
@@ -100,12 +140,11 @@ function main()
 
     //5. Отправка письма
     $order = getOrder($userId);
-    sendMail($order, $home, $street, $part, $apartment, $floor);
-
+    sendMail($order, $email, $home, $street, $part, $apartment, $floor);
 
 }
 
-main();
+main($count);
 
 
 
